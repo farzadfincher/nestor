@@ -41,7 +41,7 @@ angular.module('nestorApp')
 
         $scope.addedComponents[c.name] = c;
         var componentName = c.name;
-        var aMetadata = $scope.componentMetadata[blueprint.name];
+        var aMetadata = $scope.componentMetadata[blueprint.type];
         $scope.template.Resources[componentName] = {
           Type: aMetadata.type
         };
@@ -71,11 +71,11 @@ angular.module('nestorApp')
         var uniqueId = generateComponentName(blueprint.name);
         var c = new UIComponents.Component(
           uniqueId,
-          blueprint.name,
+          blueprint.type,
           uniqueId,
           blueprint.image,
-          $scope.componentMetadata[blueprint.name].properties.required,
-          $scope.componentMetadata[blueprint.name].properties.optional,
+          $scope.componentMetadata[blueprint.type].properties.required,
+          $scope.componentMetadata[blueprint.type].properties.optional,
           blueprint.description,
           posX,
           posY);
@@ -126,12 +126,10 @@ angular.module('nestorApp')
         $scope.connections.push({source: sourceName, target: targetName});
 
         var sourceObject = $scope.template.Resources[sourceName];
-        var sourceType = AWSComponents.typeMappings[sourceObject.Type];
 
         var targetObject = $scope.template.Resources[targetName];
-        var targetType = AWSComponents.typeMappings[targetObject.Type];
 
-        var incomingProperies = $scope.componentMetadata[targetType].IncomingConnection[sourceType];
+        var incomingProperies = $scope.componentMetadata[targetObject.type].IncomingConnection[sourceObject.type];
 
         var finalTarget;
         var connectionHappened;

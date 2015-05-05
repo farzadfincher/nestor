@@ -31,6 +31,36 @@ app.service('UIComponents', function () {
         });
       });
     });
+
+      jsPlumb.bind("beforeDrop", function (info) {
+          var getComponentTypeWithNominalName = function (nominalName) {
+              if ($scope.addedComponents[nominalName])
+                  return $scope.addedComponents[nominalName].type;
+
+              return '';
+          };
+
+          var areTypesMatch = function (sourceType, targetType) {
+              var targetObj = $scope.componentMetadata[targetType];
+              if (targetObj && targetObj.IncomingConnection.hasOwnProperty(sourceType)) {
+                  return true;
+              }
+              return false;
+          }
+
+          if (info.sourceId == info.targetId) {
+              return false;
+          }
+
+          var sourceNominalName = info.source.attributes['data-identifier'].nodeValue;
+          var sourceType = getComponentTypeWithNominalName(sourceNominalName);
+
+          var targetNominalName = info.target.attributes['data-identifier'].nodeValue;
+          var targetType = getComponentTypeWithNominalName(targetNominalName);
+
+          return areTypesMatch(sourceType, targetType);
+      });
+
   };
 
   this.connectComponents = function(sourceName, targetName, isDashed) {
